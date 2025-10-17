@@ -1,5 +1,5 @@
 Hunter hunter;
-Gun gun;
+Crosshair crosshair;
 Bigfoot myBigfoot;
 lightManagement lm;
 
@@ -9,8 +9,8 @@ void setup() {
 
   // Initialize all objects
   hunter = new Hunter(width/2, height);
-  gun = new Gun(width/2 - 100, height);
   myBigfoot = new Bigfoot(width/2, height/2, 1.5);
+  crosshair = new Crosshair();
   lm = new lightManagement();
   lm.newStage();  // start with first batch of lights
 }
@@ -21,7 +21,7 @@ void draw() {
   // Draw everything
   myBigfoot.drawBigfoot();
   hunter.display();
-  gun.display();
+  crosshair.drawCrosshair();
   lm.drawLights();
   lm.checkTouched(myBigfoot.bigX, myBigfoot.bigY);
 }
@@ -249,39 +249,24 @@ class Hunter {
     vertex(featherBaseX, featherBaseY); // close base
     endShape(CLOSE);
     popStyle();
- }
-}
-// ===================== GUN CLASS =====================
 
-class Gun {
-  
-  float x, y;
-
-
-  Gun(float x, float y) {
-    this.x = x;
-    this.y = y;
-    
-    x =  width/2 - 100;
-    y = height;
   }
-   void display() {
-  pushStyle();
-  fill(#A75F05);
-  rect(x, y - 30 , 50, 5);
-  popStyle();
-  
-  pushStyle();
-  fill(##C1BBB4);
-  rect(x, y - 30 , 50, 5);
-  popStyle();
-  
 }
 
 
+// ===================== CROSSHAIR CLASS ====================
+class Crosshair {
+  //coordinates are based on location of bigfoot, it follows him.
 
-    
-    
-    
-  }
+void drawCrosshair() {
+  pushStyle();
+  stroke(255,0, 0); //red crosshair
+  strokeWeight(2);
+  noFill();
+  
+  line(myBigfoot.bigX - 20, myBigfoot.bigY, myBigfoot.bigX + 20, myBigfoot.bigY);
+  line(myBigfoot.bigX, myBigfoot.bigY - 20, myBigfoot.bigX, myBigfoot.bigY + 20);
+  popStyle();
+  
+}
 }
