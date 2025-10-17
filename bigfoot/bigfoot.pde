@@ -115,9 +115,9 @@ class light {
   }
 }
 
-class Hunter {
 
-  float x, y;
+
+
 // ===================== BIGFOOT CLASS =====================
 
 class Bigfoot {
@@ -128,10 +128,12 @@ class Bigfoot {
   boolean armLfront = false;
   boolean armRfront = false;
 
+Bigfoot(float x,float y, float s){
+  bigX=x;
+  bigY=y;
+  this.s=s;
+}
 
-  Hunter(float x, float y) {
-    this.x = width/2;
-    this.y = height;
   void drawBigfoot() {
     noStroke();
     pushMatrix();
@@ -149,6 +151,20 @@ class Bigfoot {
     rect(-15, -70, 30, 40, 30);
 
     popMatrix();
+  }
+  }
+
+
+// ===================== HUNTER CLASS =====================
+
+class Hunter {
+
+  float x, y;
+
+
+  Hunter(float x, float y) {
+    this.x = width/2;
+    this.y = height;
   }
 
 
@@ -175,10 +191,6 @@ class Bigfoot {
     popStyle();
 
 //------Hat--------//
-// ===================== HUNTER CLASS =====================
-
-class Hunter {
-  float x, y;
 
     //------hat with curvevertex
     float offset = 50;
@@ -198,8 +210,6 @@ class Hunter {
     vertex(width/2 + 80, height - 130 + offset);    // right mid
     vertex(width/2 + 100, height - 100+ offset);
     endShape(CLOSE);
-    fill(#A0580B);
-    arc(x, y, 200, 200, PI, TWO_PI);
     popStyle();
 
     //----light green second level
@@ -227,9 +237,6 @@ class Hunter {
     float featherLength = 60; // length of the feather
     float featherWidth = 8;   // max width near the base
 
-    // Hat
-    pushStyle();
-    fill(#2C8913);
     beginShape();
     vertex(featherBaseX, featherBaseY); // base
     vertex(featherBaseX + 2, featherBaseY - featherLength * 0.3); // right curve
