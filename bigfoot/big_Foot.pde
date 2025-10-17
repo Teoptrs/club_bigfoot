@@ -11,6 +11,8 @@ class Bigfoot {
   float armAngle = 0;
   float moveSpeed = 5;
   float danceSpeed = 3;
+  int danceStartTime = 0;   // time when dancing started
+  int danceDuration = 2000; 
 
   Bigfoot(float x, float y, float s) {
     bigX = x;
@@ -71,19 +73,25 @@ class Bigfoot {
   }
 
   void move() {
-    if (moveLeft && bigX >= 0) bigX -= moveSpeed;
-    if (moveRight && bigX <= width) bigX += moveSpeed;
-    if (moveUp && bigY >= 0) bigY -= moveSpeed;
-    if (moveDown && bigY <= height) bigY += moveSpeed;
+  if (moveLeft && bigX >= 0) bigX -= moveSpeed;
+  if (moveRight && bigX <= width) bigX += moveSpeed;
+  if (moveUp && bigY >= 0) bigY -= moveSpeed;
+  if (moveDown && bigY <= height) bigY += moveSpeed;
 
-    if (dance) {
-      if (armsMoveL) {
-        armAngle += danceSpeed;
-        if (armAngle >= 50) armsMoveL = false;
-      } else {
-        armAngle -= danceSpeed;
-        if (armAngle <= -50) armsMoveL = true;
-      }
+  // stop dancing after 2 seconds
+  if (dance && millis() - danceStartTime > danceDuration) {
+    dance = false;
+  }
+
+  if (dance) {
+    if (armsMoveL) {
+      armAngle += danceSpeed;
+      if (armAngle >= 50) armsMoveL = false;
+    } else {
+      armAngle -= danceSpeed;
+      if (armAngle <= -50) armsMoveL = true;
     }
   }
+}
+
 }

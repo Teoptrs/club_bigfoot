@@ -8,6 +8,8 @@ class AllTheProps {
   }
 
   void drawAll() {
+    stroke(0);
+    strokeWeight(4);
     floor.drawDanceFloor();
     ball.drawBall();
   }
@@ -67,13 +69,16 @@ class DanceFloor {
 
 class DiscoBall {
   float angle;
+  color[] colors = { // Our disco color selection
+    #001BEF, #7CD4FF, #FFF325, #FF36A5, #6FFD3E, #6800BC
+  };
 
   DiscoBall() {
     angle = 0;
   }
 
   void drawBall() {
-
+    //hanging string
     stroke(200);
     line(width / 2, 0, width / 2, height / 4 - 50);
     stroke(1);
@@ -83,11 +88,14 @@ class DiscoBall {
     rotate(radians(angle));
     fill(#E0E0E0);
     ellipse(0, 0, width/13, width/13);
+
     noStroke();
-    fill(#F0F0F0, 200);
-    for (int i = 0; i<360; i = i + 20) {
+    for (int i = 0; i<360; i = i + 30) {
+      fill(#E0E0E0, 200);
+      pushMatrix();                   // isolate rotation for each beam
       rotate(radians(i));
       triangle(0, 0, -width/10, 3*height/4+0.5*width, width/10, 3*height/4+0.5*width);
+      popMatrix();                    // reset rotation
     }
     stroke(1);
     popMatrix();
