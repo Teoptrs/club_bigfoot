@@ -16,7 +16,7 @@ void keyPressed() {
   if (key == 'w') moveUp = true;
   if (key == 's') moveDown = true;
   if (key == 'a') moveLeft = true;
-  if (key == 'd') moveRight = false;
+  if (key == 'd') moveRight = true;
 }
 
 void keyReleased() {
@@ -38,8 +38,8 @@ class Bigfoot {
   float s;          // scale factor
   boolean dance = true;
   boolean isShot = false;
-  boolean armLfront = true;
-  boolean armRfront = false;
+  boolean armLfront = false;
+  boolean armRfront = true;
   boolean armsMoveL = true;
   float armAngle = 0;
   float moveSpeed = 5;
@@ -262,8 +262,6 @@ class Bigfoot {
         legAngle +=0.4;
         if (armAngle >= 50) {
           armsMoveL = false;
-          armLfront = !armLfront;
-          armRfront = !armRfront;
         }
       } else {
         armAngle -= danceSpeed;
@@ -271,11 +269,25 @@ class Bigfoot {
         legAngle -=0.4;
         if (armAngle <= -50) {
           armsMoveL = true;
-          armLfront = !armLfront;
-          armRfront = !armRfront;
+        }
+      }
+
+      if (armAngle >= 50) {
+        if (armLfront && !armRfront) {
+          armLfront=false;
+        } else if (!armLfront) {
+          armLfront=true;
+        }
+      }
+      if (armAngle <= -50) {
+        if (!armLfront && armRfront) {
+          armRfront=false;}
+        else if (!armRfront) {
+          armRfront=true;
         }
       }
     }
+
     if (!dance) {
       raisBrow=0;
       squint=0;
