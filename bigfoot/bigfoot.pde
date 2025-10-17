@@ -35,18 +35,42 @@ class Bigfoot {
     scale(s);               // Apply scale relative to that position
 
     // Draw centered Bigfoot around 0,0
-    fill(#984E08);
-    rect(-30, -30, 60, 100, 30);   // body
+    fill(#5F3710);
     rect(-35, 20, 30, 130, 10);    // left leg
     rect(5, 20, 30, 130, 10);      // right leg
-    rect(-50, -40, 100, 30, 10);   // shoulders
+
+    fill(#984E08);
+    rect(-30, -30, 60, 100, 30);   // body
+    rect(-60, -40, 120, 40, 10);   // shoulders
+
     rect(-65, -40, 20, 130, 10);    // left arm
     rect(65, -40, -20, 130, 10);    // right arm
-    
-     rect(-20, -80, 40, 40, 30);    // head
-     rect(-15, -70, 30, 40, 30);
-     
-    
+
+    rect(-20, -90, 40, 45, 30);    // head
+    rect(-25, -60, 50, 20, 10);    // jaw
+
+    fill(#000000);
+    circle(-10, -70, 9);  //eye left
+    circle(10, -70, 9);  //eye left
+
+    fill(#5F3710);
+    rect(-18, -75, 15, 3, 5);    // eyebrow left
+    rect(18, -75, -15, 3, 5);    // eyebrow left
+    rect(-40, -30, 80, 40, 30);    // chest hair
+
+    fill(#984E08);
+    rect(-44, 140, 40, 15, 10);    // left foot
+    rect(44, 140, -40, 15, 10);    // left foot
+
+    fill(#FFE59D);
+    rect(5, -53, 5, 7, 10);   // teeth
+
+    fill(#5F3710);
+    rect(-15, -55, 30, 4, 10);   // mouth
+    rect(-3, -70, 6, 13, 2);   // nose
+
+
+
     popMatrix();
   }
 }
