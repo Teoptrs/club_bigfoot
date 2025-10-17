@@ -1,4 +1,5 @@
 Hunter hunter;
+Gun gun;
 Bigfoot myBigfoot;
 lightManagement lm;
 
@@ -8,6 +9,7 @@ void setup() {
 
   // Initialize all objects
   hunter = new Hunter(width/2, height);
+  gun = new Gun(width/2 - 100, height);
   myBigfoot = new Bigfoot(width/2, height/2, 1.5);
   lm = new lightManagement();
   lm.newStage();  // start with first batch of lights
@@ -17,9 +19,9 @@ void setup() {
 void draw() {
   background(255);
   // Draw everything
-  
   myBigfoot.drawBigfoot();
   hunter.display();
+  gun.display();
   lm.drawLights();
   lm.checkTouched(myBigfoot.bigX, myBigfoot.bigY);
 }
@@ -212,9 +214,9 @@ class Hunter {
     endShape(CLOSE);
     popStyle();
 
-    //----light green second level
+
     pushStyle();
-    fill(#2C8913); //red top
+    fill(#2C8913); 
     strokeWeight(2);
     beginShape();
 
@@ -247,6 +249,35 @@ class Hunter {
     vertex(featherBaseX, featherBaseY); // close base
     endShape(CLOSE);
     popStyle();
+ }
+}
+// ===================== GUN CLASS =====================
+
+class Gun {
+  
+  float x, y;
+
+
+  Gun(float x, float y) {
+    this.x = x;
+    this.y = y;
+    
+    x =  width/2 - 100;
+    y = height;
+  }
+   void display() {
+  pushStyle();
+  fill(#A75F05);
+  rect(x, y - 30 , 50, 5);
+  popStyle();
+  
+  pushStyle();
+  fill(##C1BBB4);
+  rect(x, y - 30 , 50, 5);
+  popStyle();
+  
+}
+
 
 
     
