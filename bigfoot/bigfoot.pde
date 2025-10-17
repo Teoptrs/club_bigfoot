@@ -17,9 +17,11 @@ void draw() {
   background(#1593CB);
 
   // Draw everything
-  lm.drawLights();
+  
   myBigfoot.drawBigfoot();
   hunter.display();
+  lm.drawLights();
+  lm.checkTouched(myBigfoot.bigX, myBigfoot.bigY);
 }
 
 
@@ -37,12 +39,37 @@ class lightManagement {
     lights.clear();
     for (int i = 0; i <= stage; i++) {
       lights.add(new light(
-        random(20, width - 20),
-        random(20, height - 20),
+        random(100, width - 100),
+        random(100, height - 100),
         color(random(255), random(255), random(255), 180)
       ));
     }
   }
+  
+  
+  void checkTouched(float bx, float by) {
+  for (light l : lights) {
+    if (l.isTouched(bx, by)) {
+      l.isTouched = true;
+      if(stageDone()){
+        stage++;
+        newStage();
+        break;
+      
+      } 
+    }
+  }
+  }
+
+  Boolean stageDone(){
+    for(light l : lights) {
+      if (!l.isTouched){
+        return false;
+      }
+    }
+    return true;
+  }
+  
 
   void drawLights() {
     for (light l : lights) {
@@ -60,13 +87,17 @@ class light {
   float radius;
   color col;
   boolean isTouched;
+  float origin;
+  float offset;
 
   light(float x, float y, color col) {
     this.x = x;
     this.y = y;
-    radius = 50;
+    radius = 200;
     this.col = col;
     isTouched = false;
+    origin=x+random(-100,100);
+    offset=random(10);
   }
 
   boolean isTouched(float bx, float by) {
@@ -74,9 +105,13 @@ class light {
   }
 
   void drawLight() {
-    fill(col);
-    noStroke();
-    circle(x, y, radius);
+    if(!isTouched){
+      fill(col);
+      noStroke();
+      circle(x, y, radius);
+      triangle(origin,-y,x-(radius/2),y,x+(radius/2),y);
+      origin=origin+(sin(frameCount*0.1+offset)*10);
+    }
   }
 }
 
