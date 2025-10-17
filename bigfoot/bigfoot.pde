@@ -1,28 +1,89 @@
 Hunter hunter;
 Bigfoot myBigfoot;
+lightManagement lm;
 
 void setup() {
   fullScreen();
   background(#1593CB);
 
-  // Initialize both
+  // Initialize all objects
   hunter = new Hunter(width/2, height);
   myBigfoot = new Bigfoot(width/2, height/2, 1.5);
+  lm = new lightManagement();
+  lm.newStage();  // start with first batch of lights
 }
 
 void draw() {
   background(#1593CB);
 
-  // Draw both on screen
+  // Draw everything
+  lm.drawLights();
   myBigfoot.drawBigfoot();
   hunter.display();
+}
+
+
+// ===================== LIGHT MANAGEMENT =====================
+
+class lightManagement {
+  int stage;
+  ArrayList<light> lights = new ArrayList<light>();
+
+  lightManagement() {
+    stage = 1;
+  }
+
+  void newStage() {
+    lights.clear();
+    for (int i = 0; i <= stage; i++) {
+      lights.add(new light(
+        random(20, width - 20),
+        random(20, height - 20),
+        color(random(255), random(255), random(255), 180)
+      ));
+    }
+  }
+
+  void drawLights() {
+    for (light l : lights) {
+      l.drawLight();
+    }
+  }
+}
+
+
+// ===================== LIGHT CLASS =====================
+
+class light {
+  float x;
+  float y;
+  float radius;
+  color col;
+  boolean isTouched;
+
+  light(float x, float y, color col) {
+    this.x = x;
+    this.y = y;
+    radius = 50;
+    this.col = col;
+    isTouched = false;
+  }
+
+  boolean isTouched(float bx, float by) {
+    return dist(x, y, bx, by) < radius;
+  }
+
+  void drawLight() {
+    fill(col);
+    noStroke();
+    circle(x, y, radius);
+  }
 }
 
 
 // ===================== BIGFOOT CLASS =====================
 
 class Bigfoot {
-
   float bigX, bigY; // world position
   float s;          // scale factor
   boolean dance = false;
@@ -38,12 +99,10 @@ class Bigfoot {
 
   void drawBigfoot() {
     noStroke();
-
     pushMatrix();
-    translate(bigX, bigY);  // Move to Bigfoot’s position on screen
-    scale(s);               // Apply scale relative to that position
+    translate(bigX, bigY);
+    scale(s);
 
-    // Draw centered Bigfoot around 0,0
     fill(#984E08);
     rect(-30, -30, 60, 100, 30);   // body
     rect(-35, 20, 30, 130, 10);    // left leg
@@ -59,30 +118,9 @@ class Bigfoot {
 }
 
 
-// ===================== LIGHT CLASS =====================
-
-class light {
-  float x;
-  float y;
-  float radius;
-
-  light(float x, float y, float radius) {
-    this.x = x;
-    this.y = y;
-    this.radius = radius;
-  }
-
-  boolean isTouched(float bx, float by) {
-    // Checks if Bigfoot (bx, by) is touching this light
-    return dist(x, y, bx, by) < radius;
-  }
-}
-
-
 // ===================== HUNTER CLASS =====================
 
 class Hunter {
-
   float x, y;
 
   Hunter(float x, float y) {
@@ -93,7 +131,7 @@ class Hunter {
   void display() {
     // Head with hair
     pushStyle();
-    fill(#A0580B); // dark brown hair
+    fill(#A0580B);
     arc(x, y, 200, 200, PI, TWO_PI);
     popStyle();
 
@@ -103,7 +141,7 @@ class Hunter {
     arc(x, y, 200, 50, PI, TWO_PI);
     popStyle();
 
-    // Hat (green base)
+    // Hat
     pushStyle();
     fill(#2C8913);
     beginShape();
