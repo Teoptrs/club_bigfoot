@@ -2,26 +2,48 @@ Hunter hunter;
 Bigfoot myBigfoot;
 lightManagement lm;
 
+boolean moveUp = false;
+boolean moveDown = false;
+boolean moveLeft = false;
+boolean moveRight = false;
+
 void setup() {
   fullScreen();
   background(#1593CB);
 
-  // Initialize all objects
-  hunter = new Hunter(width/2, height);
-  myBigfoot = new Bigfoot(width/2, height/2, 1.5);
+  hunter = new Hunter(width / 2, height);
+  myBigfoot = new Bigfoot(width / 2, height / 2, 1.5);
   lm = new lightManagement();
-  lm.newStage();  // start with first batch of lights
+  lm.newStage();
 }
 
-
 void draw() {
-  background(255);
-  // Draw everything
-  
+  background(#1593CB);
+
+  // Draw and move Bigfoot
   myBigfoot.drawBigfoot();
+  myBigfoot.move();
+
+  // Draw hunter and lights
   hunter.display();
   lm.drawLights();
   lm.checkTouched(myBigfoot.bigX, myBigfoot.bigY);
+}
+
+// ===================== KEY INPUT =====================
+
+void keyPressed() {
+  if (key == 'w') moveUp = true;
+  if (key == 's') moveDown = true;
+  if (key == 'a') moveLeft = true;
+  if (key == 'd') moveRight = true;
+}
+
+void keyReleased() {
+  if (key == 'w') moveUp = false;
+  if (key == 's') moveDown = false;
+  if (key == 'a') moveLeft = false;
+  if (key == 'd') moveRight = false;
 }
 
 
@@ -45,31 +67,26 @@ class lightManagement {
       ));
     }
   }
-  
-  
+
   void checkTouched(float bx, float by) {
-  for (light l : lights) {
-    if (l.isTouched(bx, by)) {
-      l.isTouched = true;
-      if(stageDone()){
-        stage++;
-        newStage();
-        break;
-      
-      } 
+    for (light l : lights) {
+      if (l.isTouched(bx, by)) {
+        l.isTouched = true;
+        if (stageDone()) {
+          stage++;
+          newStage();
+          break;
+        }
+      }
     }
   }
-  }
 
-  Boolean stageDone(){
-    for(light l : lights) {
-      if (!l.isTouched){
-        return false;
-      }
+  boolean stageDone() {
+    for (light l : lights) {
+      if (!l.isTouched) return false;
     }
     return true;
   }
-  
 
   void drawLights() {
     for (light l : lights) {
@@ -96,8 +113,8 @@ class light {
     radius = 200;
     this.col = col;
     isTouched = false;
-    origin=x+random(-100,100);
-    offset=random(10);
+    origin = x + random(-100, 100);
+    offset = random(10);
   }
 
   boolean isTouched(float bx, float by) {
@@ -105,34 +122,35 @@ class light {
   }
 
   void drawLight() {
-    if(!isTouched){
+    if (!isTouched) {
       fill(col);
       noStroke();
       circle(x, y, radius);
-      triangle(origin,-y,x-(radius/2),y,x+(radius/2),y);
-      origin=origin+(sin(frameCount*0.1+offset)*10);
+      origin += sin(frameCount * 0.1 + offset) * 10;
     }
   }
 }
 
 
-
-
 // ===================== BIGFOOT CLASS =====================
 
 class Bigfoot {
-  float bigX, bigY; // world position
-  float s;          // scale factor
-  boolean dance = false;
+  float bigX, bigY;
+  float s;
+  boolean dance = true;
   boolean isShot = false;
   boolean armLfront = false;
   boolean armRfront = false;
+  boolean armsMoveL = true;
+  float armAngle = 0;
+  float moveSpeed = 5;
+  float danceSpeed = 3;
 
-Bigfoot(float x,float y, float s){
-  bigX=x;
-  bigY=y;
-  this.s=s;
-}
+  Bigfoot(float x, float y, float s) {
+    bigX = x;
+    bigY = y;
+    this.s = s;
+  }
 
   void drawBigfoot() {
     noStroke();
@@ -140,117 +158,137 @@ Bigfoot(float x,float y, float s){
     translate(bigX, bigY);
     scale(s);
 
+    fill(#5F3710);
+    rect(-35, 20, 30, 130, 10);
+    rect(5, 20, 30, 130, 10);
+
     fill(#984E08);
-    rect(-30, -30, 60, 100, 30);   // body
-    rect(-35, 20, 30, 130, 10);    // left leg
-    rect(5, 20, 30, 130, 10);      // right leg
-    rect(-50, -40, 100, 30, 10);   // shoulders
-    rect(-65, -40, 20, 130, 10);   // left arm
-    rect(65, -40, -20, 130, 10);   // right arm
-    rect(-20, -80, 40, 40, 30);    // head
-    rect(-15, -70, 30, 40, 30);
+    rect(-30, -30, 60, 100, 30);
+    rect(-60, -40, 120, 40, 10);
+
+    rect(-20, -90, 40, 45, 30);
+    rect(-25, -60, 50, 20, 10);
+
+    fill(#000000);
+    circle(-10, -70, 9);
+    circle(10, -70, 9);
+
+    fill(#5F3710);
+    rect(-18, -75, 15, 3, 5);
+    rect(18, -75, -15, 3, 5);
+    rect(-40, -30, 80, 40, 30);
+
+    fill(#984E08);
+    rect(-44, 140, 40, 15, 10);
+    rect(44, 140, -40, 15, 10);
+
+    pushMatrix();
+    translate(-60, -40);
+    rotate(radians(armAngle));
+    rect(-10, 0, 20, 130, 10);
+    popMatrix();
+
+    pushMatrix();
+    translate(60, -40);
+    rotate(radians(armAngle));
+    rect(10, 0, -20, 130, 10);
+    popMatrix();
+
+    fill(#FFE59D);
+    rect(5, -53, 5, 7, 10);
+
+    fill(#5F3710);
+    rect(-15, -55, 30, 4, 10);
+    rect(-3, -70, 6, 13, 2);
 
     popMatrix();
   }
+
+  void move() {
+    if (moveLeft && bigX >= 0) bigX -= moveSpeed;
+    if (moveRight && bigX <= width) bigX += moveSpeed;
+    if (moveUp && bigY >= 0) bigY -= moveSpeed;
+    if (moveDown && bigY <= height) bigY += moveSpeed;
+
+    if (dance) {
+      if (armsMoveL) {
+        armAngle += danceSpeed;
+        if (armAngle >= 50) armsMoveL = false;
+      } else {
+        armAngle -= danceSpeed;
+        if (armAngle <= -50) armsMoveL = true;
+      }
+    }
   }
+}
 
 
 // ===================== HUNTER CLASS =====================
 
 class Hunter {
-
   float x, y;
 
-
   Hunter(float x, float y) {
-    this.x = width/2;
-    this.y = height;
+    this.x = x;
+    this.y = y;
   }
 
-
   void display() {
-
-//--------Head-------//
-
     pushStyle();
-    fill(#A0580B); //hair, back of hunter's head, dark brown
-    arc(width/2, height, 200, 200, PI, TWO_PI);
+    fill(#A0580B);
+    arc(width / 2, height, 200, 200, PI, TWO_PI);
     popStyle();
 
-    //-----hair strands
-    pushStyle();
-    stroke(0);
-    strokeWeight(2);
-
-    //popStyle();
-
-    //-------neck
-    pushStyle();
     fill(#FFE9B9);
-    arc(width/2, height, 250, 30, PI, TWO_PI);
-    popStyle();
+    arc(width / 2, height, 250, 30, PI, TWO_PI);
 
-//------Hat--------//
-
-    //------hat with curvevertex
+    // Hat
     float offset = 50;
     float offset2 = -28;
     float hatScale = 0.55;
 
     pushStyle();
-    fill(#175F02); //base of hat green
+    fill(#175F02);
     strokeWeight(2);
     beginShape();
-
-    vertex(width/2 - 100, height - 100 + offset);   // left bottom, touches head
-    vertex(width/2 - 80, height - 130 + offset);    // left mid
-    vertex(width/2 - 40, height - 140 + offset);    // left top curve
-    vertex(width/2, height - 145 + offset);         // top-center
-    vertex(width/2 + 40, height - 140 + offset);    // right top curve
-    vertex(width/2 + 80, height - 130 + offset);    // right mid
-    vertex(width/2 + 100, height - 100+ offset);
+    vertex(width / 2 - 100, height - 100 + offset);
+    vertex(width / 2 - 80, height - 130 + offset);
+    vertex(width / 2 - 40, height - 140 + offset);
+    vertex(width / 2, height - 145 + offset);
+    vertex(width / 2 + 40, height - 140 + offset);
+    vertex(width / 2 + 80, height - 130 + offset);
+    vertex(width / 2 + 100, height - 100 + offset);
     endShape(CLOSE);
     popStyle();
 
-    //----light green second level
     pushStyle();
-    fill(#2C8913); //red top
+    fill(#2C8913);
     strokeWeight(2);
     beginShape();
-
-    vertex(width/2 - 100 * hatScale, height - 100 * hatScale + offset2); // left bottom
-    vertex(width/2 - 80 * hatScale, height - 130 * hatScale + offset2); // left mid
-    vertex(width/2 - 40 * hatScale, height - 140 * hatScale + offset2); // left top curve
-    vertex(width/2, height - 145 * hatScale + offset2); // top-center
-    vertex(width/2 + 40 * hatScale, height - 140 * hatScale + offset2); // right top curve
-    vertex(width/2 + 80 * hatScale, height - 130 * hatScale + offset2); // right mid
-    vertex(width/2 + 100 * hatScale, height - 100 * hatScale + offset2); // right bottom
-
+    vertex(width / 2 - 100 * hatScale, height - 100 * hatScale + offset2);
+    vertex(width / 2 - 80 * hatScale, height - 130 * hatScale + offset2);
+    vertex(width / 2 - 40 * hatScale, height - 140 * hatScale + offset2);
+    vertex(width / 2, height - 145 * hatScale + offset2);
+    vertex(width / 2 + 40 * hatScale, height - 140 * hatScale + offset2);
+    vertex(width / 2 + 80 * hatScale, height - 130 * hatScale + offset2);
+    vertex(width / 2 + 100 * hatScale, height - 100 * hatScale + offset2);
     endShape(CLOSE);
     popStyle();
 
-//-----Feather----//
-
-
-    float featherBaseX = width/2;
-    float featherBaseY = height - 145 + offset; // adjust to where the layers meet
-    float featherLength = 60; // length of the feather
-    float featherWidth = 8;   // max width near the base
+    // Feather
+    float featherBaseX = width / 2;
+    float featherBaseY = height - 145 + offset;
+    float featherLength = 60;
+    float featherWidth = 8;
 
     beginShape();
-    vertex(featherBaseX, featherBaseY); // base
-    vertex(featherBaseX + 2, featherBaseY - featherLength * 0.3); // right curve
-    vertex(featherBaseX + 1, featherBaseY - featherLength * 0.6); // right mid taper
-    vertex(featherBaseX, featherBaseY - featherLength);       // tip
-    vertex(featherBaseX - 1, featherBaseY - featherLength * 0.6); // left mid taper
-    vertex(featherBaseX - 2, featherBaseY - featherLength * 0.3); // left curve
-    vertex(featherBaseX, featherBaseY); // close base
+    vertex(featherBaseX, featherBaseY);
+    vertex(featherBaseX + 2, featherBaseY - featherLength * 0.3);
+    vertex(featherBaseX + 1, featherBaseY - featherLength * 0.6);
+    vertex(featherBaseX, featherBaseY - featherLength);
+    vertex(featherBaseX - 1, featherBaseY - featherLength * 0.6);
+    vertex(featherBaseX - 2, featherBaseY - featherLength * 0.3);
+    vertex(featherBaseX, featherBaseY);
     endShape(CLOSE);
-    popStyle();
-
-
-    
-    
-    
   }
 }
