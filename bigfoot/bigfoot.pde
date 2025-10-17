@@ -24,7 +24,8 @@ class Hunter {
 
   void display() {
 
-    //-------shape of head with hair
+//--------Head-------//
+
     pushStyle();
     fill(#A0580B); //hair, back of hunter's head, dark brown
     arc(width/2, height, 200, 200, PI, TWO_PI);
@@ -35,34 +36,15 @@ class Hunter {
     stroke(0);
     strokeWeight(2);
 
-    ////will fix this part later
-    ////----left side strand
-    //beginShape();
-    //curveVertex(x - 60, y - 100);
-    //curveVertex(x - 80, y - 60);
-    //curveVertex(x - 70, y - 30);
-    //curveVertex(x - 70, y - 30);
-    //endShape(CLOSE);
-
-    ////----right side strand
-    //beginShape();
-    //curveVertex(x + 60, y - 100);
-    //curveVertex(x + 80, y - 60);
-    //curveVertex(x + 70, y - 30);
-    //curveVertex(x + 70, y - 30);
-    //endShape(CLOSE);
-
     //popStyle();
 
     //-------neck
     pushStyle();
     fill(#FFE9B9);
     arc(width/2, height, 250, 30, PI, TWO_PI);
-
     popStyle();
 
-
-
+//------Hat--------//
 
     //------hat with curvevertex
     float offset = 50;
@@ -98,17 +80,31 @@ class Hunter {
     vertex(width/2 + 80 * hatScale, height - 130 * hatScale + offset2); // right mid
     vertex(width/2 + 100 * hatScale, height - 100 * hatScale + offset2); // right bottom
 
+    endShape(CLOSE);
+    popStyle();
+
+//-----Feather----//
 
 
+    float featherBaseX = width/2;
+    float featherBaseY = height - 145 + offset; // adjust to where the layers meet
+    float featherLength = 60; // length of the feather
+    float featherWidth = 8;   // max width near the base
+
+    beginShape();
+    vertex(featherBaseX, featherBaseY); // base
+    vertex(featherBaseX + 2, featherBaseY - featherLength * 0.3); // right curve
+    vertex(featherBaseX + 1, featherBaseY - featherLength * 0.6); // right mid taper
+    vertex(featherBaseX, featherBaseY - featherLength);       // tip
+    vertex(featherBaseX - 1, featherBaseY - featherLength * 0.6); // left mid taper
+    vertex(featherBaseX - 2, featherBaseY - featherLength * 0.3); // left curve
+    vertex(featherBaseX, featherBaseY); // close base
     endShape(CLOSE);
     popStyle();
 
 
-
-    //hat ( green with brown rim)
-
-
-
-    //feather (abstract and basic shape)
+    
+    
+    
   }
 }
