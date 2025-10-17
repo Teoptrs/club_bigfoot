@@ -13,9 +13,9 @@ void setup() {
   lm.newStage();  // start with first batch of lights
 }
 
-void draw() {
-  background(#1593CB);
 
+void draw() {
+  background(255);
   // Draw everything
   
   myBigfoot.drawBigfoot();
@@ -115,7 +115,9 @@ class light {
   }
 }
 
+class Hunter {
 
+  float x, y;
 // ===================== BIGFOOT CLASS =====================
 
 class Bigfoot {
@@ -126,12 +128,10 @@ class Bigfoot {
   boolean armLfront = false;
   boolean armRfront = false;
 
-  Bigfoot(float x, float y, float scaleFactor) {
-    bigX = x;
-    bigY = y;
-    s = scaleFactor;
-  }
 
+  Hunter(float x, float y) {
+    this.x = width/2;
+    this.y = height;
   void drawBigfoot() {
     noStroke();
     pushMatrix();
@@ -150,42 +150,100 @@ class Bigfoot {
 
     popMatrix();
   }
-}
 
 
+  void display() {
+
+//--------Head-------//
+
+    pushStyle();
+    fill(#A0580B); //hair, back of hunter's head, dark brown
+    arc(width/2, height, 200, 200, PI, TWO_PI);
+    popStyle();
+
+    //-----hair strands
+    pushStyle();
+    stroke(0);
+    strokeWeight(2);
+
+    //popStyle();
+
+    //-------neck
+    pushStyle();
+    fill(#FFE9B9);
+    arc(width/2, height, 250, 30, PI, TWO_PI);
+    popStyle();
+
+//------Hat--------//
 // ===================== HUNTER CLASS =====================
 
 class Hunter {
   float x, y;
 
-  Hunter(float x, float y) {
-    this.x = x;
-    this.y = y;
-  }
+    //------hat with curvevertex
+    float offset = 50;
+    float offset2 = -28;
+    float hatScale = 0.55;
 
-  void display() {
-    // Head with hair
     pushStyle();
+    fill(#175F02); //base of hat green
+    strokeWeight(2);
+    beginShape();
+
+    vertex(width/2 - 100, height - 100 + offset);   // left bottom, touches head
+    vertex(width/2 - 80, height - 130 + offset);    // left mid
+    vertex(width/2 - 40, height - 140 + offset);    // left top curve
+    vertex(width/2, height - 145 + offset);         // top-center
+    vertex(width/2 + 40, height - 140 + offset);    // right top curve
+    vertex(width/2 + 80, height - 130 + offset);    // right mid
+    vertex(width/2 + 100, height - 100+ offset);
+    endShape(CLOSE);
     fill(#A0580B);
     arc(x, y, 200, 200, PI, TWO_PI);
     popStyle();
 
-    // Neck
+    //----light green second level
     pushStyle();
-    fill(#FFE9B9);
-    arc(x, y, 200, 50, PI, TWO_PI);
+    fill(#2C8913); //red top
+    strokeWeight(2);
+    beginShape();
+
+    vertex(width/2 - 100 * hatScale, height - 100 * hatScale + offset2); // left bottom
+    vertex(width/2 - 80 * hatScale, height - 130 * hatScale + offset2); // left mid
+    vertex(width/2 - 40 * hatScale, height - 140 * hatScale + offset2); // left top curve
+    vertex(width/2, height - 145 * hatScale + offset2); // top-center
+    vertex(width/2 + 40 * hatScale, height - 140 * hatScale + offset2); // right top curve
+    vertex(width/2 + 80 * hatScale, height - 130 * hatScale + offset2); // right mid
+    vertex(width/2 + 100 * hatScale, height - 100 * hatScale + offset2); // right bottom
+
+    endShape(CLOSE);
     popStyle();
+
+//-----Feather----//
+
+
+    float featherBaseX = width/2;
+    float featherBaseY = height - 145 + offset; // adjust to where the layers meet
+    float featherLength = 60; // length of the feather
+    float featherWidth = 8;   // max width near the base
 
     // Hat
     pushStyle();
     fill(#2C8913);
     beginShape();
-    curveVertex(x - 100, y - 100);
-    curveVertex(x - 100, y - 80);
-    curveVertex(x - 80, y - 30);
-    curveVertex(x + 100, y - 100);
-    curveVertex(x + 100, y - 100);
+    vertex(featherBaseX, featherBaseY); // base
+    vertex(featherBaseX + 2, featherBaseY - featherLength * 0.3); // right curve
+    vertex(featherBaseX + 1, featherBaseY - featherLength * 0.6); // right mid taper
+    vertex(featherBaseX, featherBaseY - featherLength);       // tip
+    vertex(featherBaseX - 1, featherBaseY - featherLength * 0.6); // left mid taper
+    vertex(featherBaseX - 2, featherBaseY - featherLength * 0.3); // left curve
+    vertex(featherBaseX, featherBaseY); // close base
     endShape(CLOSE);
     popStyle();
+
+
+    
+    
+    
   }
 }
